@@ -14,13 +14,29 @@ create table article
 
 create table channel
 (
-    id       int unsigned auto_increment comment 'ID,主键'
+    id          int unsigned auto_increment comment 'ID,主键'
         primary key,
-    username varchar(96) not null comment '频道名',
+    channelname varchar(96)                            not null comment '频道名',
+    image       varchar(255)                           null comment '频道封面',
+    user_conut  int unsigned default 0                 null comment '用户数量',
+    create_time datetime     default CURRENT_TIMESTAMP null comment '创建时间',
+    update_time datetime     default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
     constraint username
-        unique (username)
+        unique (channelname)
 )
-    charset = utf8mb4;
+    comment '频道表' charset = utf8mb4;
+
+create table channel_owner
+(
+    id          int unsigned auto_increment comment 'ID,主键'
+        primary key,
+    channel_id  int unsigned                       not null comment '频道ID',
+    user_id     int unsigned                       not null comment '用户ID',
+    type        tinyint unsigned                   not null comment '频道主职位, 1:频道主, 2:频道管理员, 3:板块管理员，4:板块管理员',
+    create_time datetime default CURRENT_TIMESTAMP null comment '创建时间',
+    update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间'
+)
+    comment '频道主' charset = utf8mb4;
 
 create table user
 (
