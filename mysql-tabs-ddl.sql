@@ -5,11 +5,16 @@ CREATE TABLE `article` (
   `title` varchar(31) NOT NULL COMMENT '标题',
   `content_preview` varchar(300) DEFAULT NULL COMMENT '正文预览',
   `content` varchar(2000) DEFAULT NULL COMMENT '完整的文章内容，最大2000字符',
-  `cover_type` tinyint(3) unsigned DEFAULT NULL COMMENT '封面类型：null=无；1=图片；2=视频',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COMMENT='文章表'
+  `cover_type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '封面类型：0=无；1=图片；2=视频',
+  `like_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '点赞量',
+  `collect_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '收藏量',
+  `comment_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '回复（评论）量',
+  `view_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '文章点击量/阅读量',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_article_create_time` (`create_time`)
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COMMENT='文章表'
 
 CREATE TABLE `article_images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -42,6 +47,18 @@ CREATE TABLE `channel_owner` (
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='频道主'
+
+CREATE TABLE `images` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '图片ID,主键',
+  `image_url` varchar(255) NOT NULL COMMENT '图片的存储路径/URL',
+  `entity_type` varchar(50) NOT NULL COMMENT '关联的实体类型（例如 "ARTICLE", "USER", "CHANNEL", "COMMENT"）',
+  `entity_id` int(10) unsigned NOT NULL COMMENT '关联的业务ID（例如文章ID、用户ID、频道ID、评论ID）',
+  `order_num` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '图片排序（针对多图实体，如文章的图片列表顺序）',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_entity_type_entity_id` (`entity_type`,`entity_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COMMENT='通用图片表'
 
 CREATE TABLE `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID,主键',
