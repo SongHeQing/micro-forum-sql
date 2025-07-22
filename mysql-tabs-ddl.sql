@@ -13,9 +13,9 @@ CREATE TABLE `article` (
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `channel_id` (`channel_id`),
-  KEY `idx_article_create_time` (`create_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章表'
+  KEY `idx_article_create_time` (`create_time`),
+  KEY `channel_id` (`channel_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章表'
 
 CREATE TABLE `channel` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID,主键',
@@ -47,8 +47,8 @@ CREATE TABLE `images` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  KEY `idx_entity_type_entity_id` (`entity_type`,`entity_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='通用图片表'
+  KEY `entity_type_entity_id_order_num_index` (`entity_type`,`entity_id`,`order_num`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='通用图片表'
 
 CREATE TABLE `user` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID ,主键',
@@ -64,5 +64,5 @@ CREATE TABLE `user` (
   UNIQUE KEY `username` (`nickname`),
   UNIQUE KEY `phone` (`phone`),
   KEY `user_email_password_index` (`email`,`password`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户表'
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户表'
 
