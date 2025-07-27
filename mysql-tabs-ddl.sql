@@ -18,6 +18,29 @@ CREATE TABLE `article` (
   KEY `channel_id` (`channel_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章表'
 
+CREATE TABLE `article_collection_previews` (
+  `id` int unsigned NOT NULL COMMENT '文章ID (与article.id相同，作为预览记录的主键)',
+  `author_user_id` int unsigned NOT NULL COMMENT '文章作者用户ID',
+  `title` varchar(255) NOT NULL COMMENT '文章标题',
+  `first_image_url` varchar(255) DEFAULT NULL COMMENT '文章第一张图片URL (封面图)',
+  `collected_count` int DEFAULT '0' COMMENT '被收藏的数量，用于管理本记录的生命周期',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间 (首次被收藏时)',
+  PRIMARY KEY (`id`),
+  KEY `IX_acp_author_id` (`author_user_id`),
+  KEY `IX_acp_collected_count` (`collected_count`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='被收藏文章的精简摘要信息表'
+
+CREATE TABLE `article_likes` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '点赞记录ID',
+  `user_id` int unsigned NOT NULL COMMENT '点赞用户ID',
+  `article_id` int unsigned NOT NULL COMMENT '被点赞的文章ID',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '点赞时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UQ_user_article_like` (`user_id`,`article_id`),
+  KEY `IX_article_likes_user_id` (`user_id`,`create_time`),
+  KEY `IX_article_likes_article_id` (`article_id`,`create_time`)
+) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章点赞记录表'
+
 CREATE TABLE `channel` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID,主键',
   `channelname` varchar(96) NOT NULL COMMENT '频道名',
@@ -56,6 +79,18 @@ CREATE TABLE `comment` (
   KEY `idx_parent_id_create_time` (`parent_id`,`create_time`)
 ) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
+CREATE TABLE `comment_likes` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '评论点赞记录ID',
+  `user_id` int unsigned NOT NULL COMMENT '点赞用户ID',
+  `article_id` int unsigned NOT NULL COMMENT '所属文章ID（冗余，方便查询）',
+  `comment_id` int unsigned NOT NULL COMMENT '被点赞的评论ID',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '点赞时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UQ_user_comment_like` (`user_id`,`comment_id`),
+  KEY `IX_comment_likes_user_id` (`user_id`,`create_time`),
+  KEY `IX_comment_likes_comment_id` (`comment_id`,`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='评论点赞记录表'
+
 CREATE TABLE `images` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '图片ID,主键',
   `image_url` varchar(255) NOT NULL COMMENT '图片的存储路径/URL',
@@ -83,4 +118,26 @@ CREATE TABLE `user` (
   UNIQUE KEY `phone` (`phone`),
   KEY `user_email_password_index` (`email`,`password`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户表'
+
+CREATE TABLE `user_collections` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '收藏关系ID',
+  `user_id` int unsigned NOT NULL COMMENT '收藏用户ID',
+  `article_preview_id` int unsigned NOT NULL COMMENT '收藏的文章预览ID（关联article_collection_previews.id）',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '收藏时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UQ_user_article_collection` (`user_id`,`article_preview_id`),
+  KEY `IX_user_collections_user_id` (`user_id`,`create_time`),
+  KEY `IX_user_collections_article_preview_id` (`article_preview_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户收藏关系表'
+
+CREATE TABLE `user_follows` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '关注记录ID',
+  `follower_id` int unsigned NOT NULL COMMENT '关注者用户ID',
+  `following_id` int unsigned NOT NULL COMMENT '被关注者用户ID',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '关注时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UQ_follower_following` (`follower_id`,`following_id`),
+  KEY `IX_user_follows_follower_id` (`follower_id`,`create_time`),
+  KEY `IX_user_follows_following_id` (`following_id`,`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户关注关系表'
 
