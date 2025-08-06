@@ -5,7 +5,8 @@ CREATE TABLE `article` (
   `title` varchar(31) NOT NULL COMMENT '标题',
   `content_preview` varchar(300) DEFAULT NULL COMMENT '正文预览',
   `content` varchar(2000) DEFAULT NULL COMMENT '完整的文章内容，最大2000字符',
-  `cover_type` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '封面类型：0=无；1=图片；2=视频',
+  `media_type` tinyint unsigned DEFAULT NULL COMMENT '文章媒体类型：NULL=无；1=图片；2=视频',
+  `media_urls` varchar(400) DEFAULT NULL COMMENT '图片',
   `like_count` int unsigned NOT NULL DEFAULT '0' COMMENT '点赞量',
   `collect_count` int unsigned NOT NULL DEFAULT '0' COMMENT '收藏量',
   `comment_count` int unsigned NOT NULL DEFAULT '0' COMMENT '回复（评论）量',
@@ -16,7 +17,7 @@ CREATE TABLE `article` (
   PRIMARY KEY (`id`),
   KEY `idx_article_create_time` (`create_time`),
   KEY `channel_id` (`channel_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章表'
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章表'
 
 CREATE TABLE `article_collection_previews` (
   `id` int unsigned NOT NULL COMMENT '文章ID (与article.id相同，作为预览记录的主键)',
@@ -39,7 +40,7 @@ CREATE TABLE `article_likes` (
   UNIQUE KEY `UQ_user_article_like` (`user_id`,`article_id`),
   KEY `IX_article_likes_user_id` (`user_id`,`create_time`),
   KEY `IX_article_likes_article_id` (`article_id`,`create_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章点赞记录表'
+) ENGINE=InnoDB AUTO_INCREMENT=129 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章点赞记录表'
 
 CREATE TABLE `channel` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID,主键',
@@ -77,7 +78,7 @@ CREATE TABLE `comment` (
   PRIMARY KEY (`id`),
   KEY `idx_article_id_parent_id_create_time` (`article_id`,`parent_id`,`create_time`),
   KEY `idx_parent_id_create_time` (`parent_id`,`create_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 CREATE TABLE `comment_likes` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '评论点赞记录ID',
@@ -101,7 +102,7 @@ CREATE TABLE `images` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `entity_type_entity_id_order_num_index` (`entity_type`,`entity_id`,`order_num`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='通用图片表'
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='通用图片表'
 
 CREATE TABLE `user` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID ,主键',
